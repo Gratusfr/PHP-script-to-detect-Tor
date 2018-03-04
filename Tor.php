@@ -20,9 +20,16 @@ if(!isset($_SESSION["Tor"]) || $full || $myIP ){
         $ch = curl_init();
         $ipServeur = $_SERVER['SERVER_ADDR'];
         $ipUser = $_SERVER['REMOTE_ADDR'];
+    
+        //Check if it's HTTP or HTTPS connexion.
+        if($_SERVER['HTTPS'] == ""){
+            $portServeur = 80 ; // HTTP : 80
+        }else{
+            $portServeur = 443 ; // HTTPS : 443
+        }
 
         // set url
-        curl_setopt($ch, CURLOPT_URL, "https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=" . $ipServeur);
+        curl_setopt($ch, CURLOPT_URL, "https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=" . $ipServeur . "&port=" . $portServeur);
 
         //return the transfer as a string
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -33,7 +40,7 @@ if(!isset($_SESSION["Tor"]) || $full || $myIP ){
         //print()
         if(strlen($output) != 0){
             if($full){
-                print($output) ;
+                print(htmlentities($output)) ;
             }
             if(strpos($output, $ipUser)){
                 //The user is on the list
@@ -56,12 +63,12 @@ if(!isset($_SESSION["Tor"]) || $full || $myIP ){
 
         // close curl resource to free up system resources
         curl_close($ch); 
-    }else{
-    // The IP is already checked.
+    }
+
+    // After the test...
     if($_SESSION["Tor"]){
         // Your code - Tor
     }else{
         // Your code - Without Tor
     }
-}
 ?>
