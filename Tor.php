@@ -3,6 +3,7 @@
         //Create a session
         session_start ();
 
+
 if(isset($_GET["display"])){
     if ($_GET["display"] == "full"){
         // To display all IP
@@ -11,6 +12,9 @@ if(isset($_GET["display"])){
         // To test the current IP only
         $myIP = true ;
     }
+}else{
+    $full = false;
+    $myIP = false;
 }
 
 if(!isset($_SESSION["Tor"]) || $full || $myIP ){
