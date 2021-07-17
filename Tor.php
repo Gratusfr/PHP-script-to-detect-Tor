@@ -26,14 +26,15 @@ if(!isset($_SESSION["Tor"]) || $full || $myIP ){
         $ipUser = $_SERVER['REMOTE_ADDR'];
     
         //Check if it's HTTP or HTTPS connexion.
-        if($_SERVER['HTTPS'] == ""){
-            $portServeur = 80 ; // HTTP : 80
-        }else{
+        if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || $_SERVER['SERVER_PORT'] == 443){
             $portServeur = 443 ; // HTTPS : 443
+        }else{
+            $portServeur = 80 ; // HTTP : 80
         }
 
         // set url
-        curl_setopt($ch, CURLOPT_URL, "https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=" . $ipServeur . "&port=" . $portServeur);
+        curl_setopt($ch, CURLOPT_URL, "https://check.torproject.org/torbulkexitlist?ip=" . $ipServeur . "&port=" . $portServeur);
 
         //return the transfer as a string
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -61,7 +62,7 @@ if(!isset($_SESSION["Tor"]) || $full || $myIP ){
                 $_SESSION["Tor"] = false ;
             }
         }else{
-            trigger_error("No data can be loaded (empty variable). Maybe <a href='https://check.torproject.org/cgi-bin/TorBulkExitList.py'>https://check.torproject.org/cgi-bin/TorBulkExitList.py</a> is down.", E_USER_WARNING);
+            trigger_error("No data can be loaded (empty variable). Maybe <a href='https://check.torproject.org/torbulkexitlist'>https://check.torproject.org/torbulkexitlist</a> is down.", E_USER_WARNING);
         }
         
 
